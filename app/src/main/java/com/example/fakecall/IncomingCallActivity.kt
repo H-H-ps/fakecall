@@ -1,5 +1,6 @@
 package com.example.fakecall
 
+import android.content.Context
 import android.graphics.Color as AndroidColor
 import android.media.AudioAttributes
 import android.media.Ringtone
@@ -77,6 +78,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.delay
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -88,6 +90,10 @@ class IncomingCallActivity : ComponentActivity() {
     private var ringtone: Ringtone? = null
     private var vibrator: Vibrator? = null
     private var done = false
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -247,7 +253,7 @@ private fun RingingContent(name: String, photo: ImageBitmap, onAnswer: () -> Uni
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(Modifier.height(32.dp))
-            Text("مكالمة واردة", color = Color.White.copy(alpha = 0.85f), fontSize = 16.sp)
+            Text(stringResource(R.string.incoming_call), color = Color.White.copy(alpha = 0.85f), fontSize = 16.sp)
             Spacer(Modifier.height(8.dp))
             Text(
                 name,
@@ -288,10 +294,10 @@ private fun SwipeToAnswer(onAnswer: () -> Unit, onDecline: () -> Unit) {
     Box(Modifier.fillMaxWidth().height(340.dp)) {
         Column(Modifier.align(Alignment.TopCenter).alpha(hint), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Filled.KeyboardArrowUp, null, tint = Color.White)
-            Text("رد", color = Color.White, fontSize = 15.sp)
+            Text(stringResource(R.string.answer), color = Color.White, fontSize = 15.sp)
         }
         Column(Modifier.align(Alignment.BottomCenter).alpha(hint), horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("رفض", color = Color.White, fontSize = 15.sp)
+            Text(stringResource(R.string.decline), color = Color.White, fontSize = 15.sp)
             Icon(Icons.Filled.KeyboardArrowDown, null, tint = Color.White)
         }
         Box(
@@ -360,12 +366,12 @@ private fun InCallContent(name: String, seconds: Int, photo: ImageBitmap, onEnd:
             Spacer(Modifier.weight(1f))
 
             val buttons: List<Pair<ImageVector, String>> = listOf(
-                Icons.Filled.MicOff to "كتم",
-                Icons.Filled.Dialpad to "الأرقام",
-                Icons.AutoMirrored.Filled.VolumeUp to "مكبّر",
-                Icons.Filled.Add to "إضافة",
-                Icons.Filled.Videocam to "فيديو",
-                Icons.Filled.Pause to "انتظار"
+                Icons.Filled.MicOff to stringResource(R.string.btn_mute),
+                Icons.Filled.Dialpad to stringResource(R.string.btn_keypad),
+                Icons.AutoMirrored.Filled.VolumeUp to stringResource(R.string.btn_speaker),
+                Icons.Filled.Add to stringResource(R.string.btn_add),
+                Icons.Filled.Videocam to stringResource(R.string.btn_video),
+                Icons.Filled.Pause to stringResource(R.string.btn_hold)
             )
             buttons.chunked(3).forEach { row ->
                 Row(
@@ -385,7 +391,7 @@ private fun InCallContent(name: String, seconds: Int, photo: ImageBitmap, onEnd:
                     .clickable(onClick = onEnd),
                 contentAlignment = Alignment.Center
             ) {
-                Icon(Icons.Filled.CallEnd, "إنهاء", tint = Color.White, modifier = Modifier.size(32.dp))
+                Icon(Icons.Filled.CallEnd, stringResource(R.string.end_call), tint = Color.White, modifier = Modifier.size(32.dp))
             }
             Spacer(Modifier.height(24.dp))
         }

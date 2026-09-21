@@ -11,7 +11,7 @@ class FakeCallTile : TileService() {
     override fun onStartListening() {
         val tile = qsTile ?: return
         tile.state = Tile.STATE_INACTIVE
-        tile.label = getString(R.string.tile_label)
+        tile.label = LocaleHelper.wrap(this).getString(R.string.tile_label)
         if (Build.VERSION.SDK_INT >= 29) tile.subtitle = Prefs.activeContact(this).name
         tile.updateTile()
     }

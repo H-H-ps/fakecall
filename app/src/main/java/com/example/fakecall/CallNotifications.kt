@@ -19,7 +19,7 @@ object CallNotifications {
     private const val ID_INCOMING = 1001
     private const val ID_MISSED = 1002
     private const val CH_INCOMING_PREFIX = "incoming_call_"
-    private const val CH_MISSED = "missed_calls"
+    private const val CH_MISSED_PREFIX = "missed_calls_"
 
     const val ACTION_DECLINE = "com.example.fakecall.DECLINE"
 
@@ -28,13 +28,18 @@ object CallNotifications {
     /** القناة تُنشأ بمعرّف يتغيّر مع النغمة/الاهتزاز لأن إعدادات القناة لا تتغير بعد إنشائها. */
     private fun ensureIncomingChannel(ctx: Context, ringUri: Uri, vibrate: Boolean): String {
         val nm = ctx.getSystemService(NotificationManager::class.java)
-        val id = CH_INCOMING_PREFIX + Integer.toHexString((ringUri.toString() + vibrate).hashCode())
+        val lang = Prefs.lang(ctx)
+        val id = CH_INCOMING_PREFIX + Integer.toHexString((ringUri.toString() + vibrate + lang).hashCode())
         if (nm.getNotificationChannel(id) == null) {
             nm.notificationChannels
                 .filter { it.id.startsWith(CH_INCOMING_PREFIX) }
                 .forEach { nm.deleteNotificationChannel(it.id) }
 
-            val channel = NotificationChannel(id, "المكالمات الواردة", NotificationManager.IMPORTANCE_HIGH).apply {
+            val channel = NotificationChannel(
+                id,
+                LocaleHelper.wrap(ctx).getString(R.string.notif_channel_incoming),
+                NotificationManager.IMPORTANCE_HIGH
+            ).apply {
                 setSound(
                     ringUri,
                     AudioAttributes.Builder()
@@ -110,10 +115,19 @@ object CallNotifications {
         val nm = NotificationManagerCompat.from(ctx)
         if (!nm.areNotificationsEnabled()) return
 
+        val localized = LocaleHelper.wrap(ctx)
+        val missedChannelId = CH_MISSED_PREFIX + Prefs.lang(ctx)
         val sys = ctx.getSystemService(NotificationManager::class.java)
-        if (sys.getNotificationChannel(CH_MISSED) == null) {
+        if (sys.getNotificationChannel(missedChannelId) == null) {
+            sys.notificationChannels
+                .filter { it.id.startsWith(CH_MISSED_PREFIX) }
+                .forEach { sys.deleteNotificationChannel(it.id) }
             sys.createNotificationChannel(
-                NotificationChannel(CH_MISSED, "المكالمات الفائتة", NotificationManager.IMPORTANCE_DEFAULT)
+                NotificationChannel(
+                    missedChannelId,
+                    localized.getString(R.string.notif_channel_missed),
+                    NotificationManager.IMPORTANCE_DEFAULT
+                )
             )
         }
 
@@ -125,11 +139,11 @@ object CallNotifications {
         )
         val icon = ImageStore.squareIcon(ImageStore.loadBitmap(ctx, contact))
 
-        val n = NotificationCompat.Builder(ctx, CH_MISSED)
+        val n = NotificationCompat.Builder(ctx, missedChannelId)
             .setSmallIcon(android.R.drawable.sym_call_missed)
             .setLargeIcon(icon)
             .setContentTitle(contact.name)
-            .setContentText("مكالمة فائتة")
+            .setContentText(localized.getString(R.string.missed_call))
             .setAutoCancel(true)
             .setContentIntent(open)
             .setShowWhen(true)

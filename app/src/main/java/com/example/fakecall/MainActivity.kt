@@ -15,6 +15,7 @@ import android.os.Bundle
 import android.provider.Settings
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -23,63 +24,25 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Call
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.FilterChip
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLayoutDirection
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
@@ -90,14 +53,20 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 class MainActivity : ComponentActivity() {
+
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(LocaleHelper.wrap(newBase))
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val direction =
+            if (Prefs.lang(this) == "ar") LayoutDirection.Rtl else LayoutDirection.Ltr
         setContent {
             AppTheme {
-                // الواجهة عربية دائماً → اتجاه من اليمين لليسار
-                CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-                    SettingsScreen()
+                CompositionLocalProvider(LocalLayoutDirection provides direction) {
+                    AppRoot()
                 }
             }
         }
@@ -116,11 +85,27 @@ private fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = scheme, content = content)
 }
 
-private val delayOptions = listOf(0 to "فوراً", 5 to "٥ ثوانٍ", 10 to "١٠ ثوانٍ", 30 to "٣٠ ثانية")
+/** تنقّل بسيط: 0 = الإعدادات، 1 = حول التطبيق، 2 = سياسة الخصوصية. */
+@Composable
+private fun AppRoot() {
+    var screen by rememberSaveable { mutableStateOf(0) }
+
+    BackHandler(enabled = screen != 0) {
+        screen = if (screen == 2) 1 else 0
+    }
+
+    when (screen) {
+        1 -> AboutScreen(onBack = { screen = 0 }, onOpenPrivacy = { screen = 2 })
+        2 -> PrivacyScreen(onBack = { screen = 1 })
+        else -> SettingsScreen(onOpenAbout = { screen = 1 })
+    }
+}
+
+private val delayOptions = listOf(0, 5, 10, 30)
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-private fun SettingsScreen() {
+private fun SettingsScreen(onOpenAbout: () -> Unit) {
     val ctx = LocalContext.current
 
     var contacts by remember { mutableStateOf(Prefs.contacts(ctx)) }
@@ -160,14 +145,33 @@ private fun SettingsScreen() {
         }
     }
 
+    val defaultWord = stringResource(R.string.default_word)
     val ringtoneTitle = remember(ringtone) {
         runCatching {
             val u = ringtone?.let(Uri::parse) ?: RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE)
             RingtoneManager.getRingtone(ctx, u).getTitle(ctx)
-        }.getOrDefault("افتراضية")
+        }.getOrDefault(defaultWord)
     }
 
-    Scaffold(topBar = { TopAppBar(title = { Text("مكالمة وهمية") }) }) { padding ->
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Text(stringResource(R.string.app_name), maxLines = 1, overflow = TextOverflow.Ellipsis)
+                },
+                actions = {
+                    TextButton(onClick = { toggleLanguage(ctx) }) {
+                        Icon(Icons.Filled.Translate, null, Modifier.size(18.dp))
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(R.string.other_language))
+                    }
+                    IconButton(onClick = onOpenAbout) {
+                        Icon(Icons.Filled.Info, stringResource(R.string.about_title))
+                    }
+                }
+            )
+        }
+    ) { padding ->
         Column(
             Modifier.padding(padding).verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -176,7 +180,7 @@ private fun SettingsScreen() {
             Button(
                 onClick = {
                     if (delaySec > 0) {
-                        Toast.makeText(ctx, "سيرنّ الاتصال بعد $delaySec ثانية", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(ctx, ctx.getString(R.string.delay_toast, delaySec), Toast.LENGTH_SHORT).show()
                     }
                     ctx.startActivity(Intent(ctx, TriggerActivity::class.java))
                 },
@@ -184,11 +188,11 @@ private fun SettingsScreen() {
             ) {
                 Icon(Icons.Filled.Call, null)
                 Spacer(Modifier.width(8.dp))
-                Text("جرّب الآن")
+                Text(stringResource(R.string.try_now))
             }
 
             // ---------------- جهات الاتصال ----------------
-            Section("جهات الاتصال") {
+            Section(stringResource(R.string.section_contacts)) {
                 contacts.forEach { c ->
                     Row(
                         Modifier.fillMaxWidth().clickable {
@@ -205,7 +209,7 @@ private fun SettingsScreen() {
                         Spacer(Modifier.width(12.dp))
                         Text(c.name, Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge)
                         IconButton(onClick = { editing = c; showDialog = true }) {
-                            Icon(Icons.Filled.Edit, "تعديل")
+                            Icon(Icons.Filled.Edit, stringResource(R.string.edit))
                         }
                         if (contacts.size > 1) {
                             IconButton(onClick = {
@@ -217,7 +221,7 @@ private fun SettingsScreen() {
                                     activeId = rest.first().id
                                     Prefs.setActiveId(ctx, activeId)
                                 }
-                            }) { Icon(Icons.Filled.Delete, "حذف") }
+                            }) { Icon(Icons.Filled.Delete, stringResource(R.string.delete)) }
                         }
                     }
                 }
@@ -227,32 +231,34 @@ private fun SettingsScreen() {
                 ) {
                     Icon(Icons.Filled.Add, null)
                     Spacer(Modifier.width(8.dp))
-                    Text("إضافة جهة اتصال")
+                    Text(stringResource(R.string.add_contact))
                 }
             }
 
             // ---------------- التأخير ----------------
-            Section("التأخير قبل الرنين") {
-                Text(
-                    "بعد الضغط على الزر يمكنك وضع الجوال في جيبك وسيرنّ بعد المدة المختارة.",
-                    style = MaterialTheme.typography.bodySmall
-                )
+            Section(stringResource(R.string.section_delay)) {
+                Text(stringResource(R.string.delay_hint), style = MaterialTheme.typography.bodySmall)
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    delayOptions.forEach { (sec, label) ->
+                    delayOptions.forEach { sec ->
                         FilterChip(
                             selected = delaySec == sec,
                             onClick = { delaySec = sec; Prefs.setDelaySec(ctx, sec) },
-                            label = { Text(label) }
+                            label = {
+                                Text(
+                                    if (sec == 0) stringResource(R.string.delay_now)
+                                    else stringResource(R.string.seconds_fmt, sec)
+                                )
+                            }
                         )
                     }
                 }
             }
 
             // ---------------- الصوت ----------------
-            Section("النغمة والاهتزاز") {
+            Section(stringResource(R.string.section_sound)) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("النغمة")
+                        Text(stringResource(R.string.ringtone))
                         Text(ringtoneTitle, style = MaterialTheme.typography.bodySmall)
                     }
                     FilledTonalButton(onClick = {
@@ -263,22 +269,22 @@ private fun SettingsScreen() {
                             ringtone?.let { putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(it)) }
                         }
                         ringtoneLauncher.launch(i)
-                    }) { Text("تغيير") }
+                    }) { Text(stringResource(R.string.change)) }
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("الاهتزاز", Modifier.weight(1f))
+                    Text(stringResource(R.string.vibration), Modifier.weight(1f))
                     Switch(checked = vibrate, onCheckedChange = { vibrate = it; Prefs.setVibrate(ctx, it) })
                 }
             }
 
             // ---------------- الأذونات ----------------
-            Section("الأذونات") {
-                PermissionRow("الإشعارات (لازمة للرنين المؤجَّل)", notifOk) {
+            Section(stringResource(R.string.section_permissions)) {
+                PermissionRow(stringResource(R.string.perm_notifications), notifOk) {
                     if (Build.VERSION.SDK_INT >= 33) notifLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     else openNotificationSettings(ctx)
                 }
                 if (Build.VERSION.SDK_INT >= 34) {
-                    PermissionRow("الإشعارات بملء الشاشة (لفتح المكالمة على شاشة القفل)", fsiOk) {
+                    PermissionRow(stringResource(R.string.perm_fsi), fsiOk) {
                         ctx.startActivity(
                             Intent(
                                 Settings.ACTION_MANAGE_APP_USE_FULL_SCREEN_INTENT,
@@ -290,19 +296,22 @@ private fun SettingsScreen() {
             }
 
             // ---------------- زر الإعدادات السريعة ----------------
-            Section("زر الإعدادات السريعة") {
+            Section(stringResource(R.string.section_tile)) {
                 if (Build.VERSION.SDK_INT >= 33) {
                     Button(onClick = { requestAddTile(ctx) }, modifier = Modifier.fillMaxWidth()) {
-                        Text("أضف الزر إلى الإعدادات السريعة")
+                        Text(stringResource(R.string.add_tile))
                     }
                 } else {
-                    Text("اسحب لوحة الإعدادات السريعة، اضغط أيقونة التعديل، ثم أضف بلاطة «مكالمة».")
+                    Text(stringResource(R.string.add_tile_manual))
                 }
             }
 
             Text(
-                "مدة الرنين ${CallConfig.RING_MS / 1000} ثوانٍ. عند الرد تستمر المكالمة " +
-                    "${CallConfig.ANSWERED_MS / 1000} ثوانٍ ثم تنتهي تلقائياً.",
+                stringResource(
+                    R.string.durations_note,
+                    CallConfig.RING_MS / 1000,
+                    CallConfig.ANSWERED_MS / 1000
+                ),
                 style = MaterialTheme.typography.bodySmall
             )
             Spacer(Modifier.height(24.dp))
@@ -325,6 +334,11 @@ private fun SettingsScreen() {
     }
 }
 
+private fun toggleLanguage(ctx: Context) {
+    Prefs.setLang(ctx, if (Prefs.lang(ctx) == "ar") "en" else "ar")
+    (ctx as? Activity)?.recreate()
+}
+
 @Composable
 private fun Section(title: String, content: @Composable ColumnScope.() -> Unit) {
     Card(Modifier.fillMaxWidth()) {
@@ -340,8 +354,8 @@ private fun PermissionRow(label: String, granted: Boolean, onGrant: () -> Unit) 
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodyMedium)
         Spacer(Modifier.width(8.dp))
-        if (granted) Text("✓ مفعّل", color = MaterialTheme.colorScheme.primary)
-        else FilledTonalButton(onClick = onGrant) { Text("منح") }
+        if (granted) Text(stringResource(R.string.perm_enabled), color = MaterialTheme.colorScheme.primary)
+        else FilledTonalButton(onClick = onGrant) { Text(stringResource(R.string.perm_grant)) }
     }
 }
 
@@ -377,7 +391,9 @@ private fun ContactDialog(initial: Contact?, onDismiss: () -> Unit, onSave: (Con
 
     AlertDialog(
         onDismissRequest = { ImageStore.delete(ctx, pending); onDismiss() },
-        title = { Text(if (initial == null) "جهة اتصال جديدة" else "تعديل جهة الاتصال") },
+        title = {
+            Text(stringResource(if (initial == null) R.string.contact_new else R.string.contact_edit))
+        },
         text = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Image(
@@ -385,11 +401,11 @@ private fun ContactDialog(initial: Contact?, onDismiss: () -> Unit, onSave: (Con
                     Modifier.size(120.dp).clip(CircleShape).clickable { pick() },
                     contentScale = ContentScale.Crop
                 )
-                TextButton(onClick = { pick() }) { Text("اختيار صورة") }
+                TextButton(onClick = { pick() }) { Text(stringResource(R.string.pick_photo)) }
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("اسم المتصل") },
+                    label = { Text(stringResource(R.string.caller_name)) },
                     singleLine = true
                 )
             }
@@ -400,14 +416,16 @@ private fun ContactDialog(initial: Contact?, onDismiss: () -> Unit, onSave: (Con
                 onSave(
                     Contact(
                         id = initial?.id ?: Prefs.newId(),
-                        name = name.trim().ifEmpty { "مجهول" },
+                        name = name.trim().ifEmpty { ctx.getString(R.string.unknown_name) },
                         photoFile = pending ?: initial?.photoFile
                     )
                 )
-            }) { Text("حفظ") }
+            }) { Text(stringResource(R.string.save)) }
         },
         dismissButton = {
-            TextButton(onClick = { ImageStore.delete(ctx, pending); onDismiss() }) { Text("إلغاء") }
+            TextButton(onClick = { ImageStore.delete(ctx, pending); onDismiss() }) {
+                Text(stringResource(R.string.cancel))
+            }
         }
     )
 }

@@ -1,4 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">مكالمة وهمية</string>
     <string name="tile_label">مكالمة</string>
+    <string name="other_language">English</string>
+    <string name="back">رجوع</string>
+    <string name="cancel">إلغاء</string>
+    <string name="save">حفظ</string>
+    <string name="send">إرسال</string>
+
+    <!-- الشاشة الرئيسية -->
+    <string name="try_now">جرّب الآن</string>
+    <string name="delay_toast">سيرنّ الاتصال بعد %1$d ثانية</string>
+    <string name="section_contacts">جهات الاتصال</string>
+    <string name="edit">تعديل</string>
+    <string name="delete">حذف</string>
+    <string name="add_contact">إضافة جهة اتصال</string>
+    <string name="section_delay">التأخير قبل الرنين</string>
+    <string name="delay_hint">بعد الضغط على الزر يمكنك وضع الجوال في جيبك وسيرنّ بعد المدة المختارة.</string>
+    <string name="delay_now">فوراً</string>
+    <string name="seconds_fmt">%1$d ثانية</string>
+    <string name="section_sound">النغمة والاهتزاز</string>
+    <string name="ringtone">النغمة</string>
+    <string name="change">تغيير</string>
+    <string name="vibration">الاهتزاز</string>
+    <string name="default_word">افتراضية</string>
+    <string name="section_permissions">الأذونات</string>
+    <string name="perm_notifications">الإشعارات (لازمة للرنين المؤجَّل)</string>
+    <string name="perm_fsi">الإشعارات بملء الشاشة (لفتح المكالمة على شاشة القفل)</string>
+    <string name="perm_enabled">✓ مفعّل</string>
+    <string name="perm_grant">منح</string>
+    <string name="section_tile">زر الإعدادات السريعة</string>
+    <string name="add_tile">أضف الزر إلى الإعدادات السريعة</string>
+    <string name="add_tile_manual">اسحب لوحة الإعدادات السريعة، اضغط أيقونة التعديل، ثم أضف بلاطة «مكالمة».</string>
+    <string name="durations_note">مدة الرنين %1$d ثوانٍ. عند الرد تستمر المكالمة %2$d ثوانٍ ثم تنتهي تلقائياً.</string>
+    <string name="contact_new">جهة اتصال جديدة</string>
+    <string name="contact_edit">تعديل جهة الاتصال</string>
+    <string name="pick_photo">اختيار صورة</string>
+    <string name="caller_name">اسم المتصل</string>
+    <string name="unknown_name">مجهول</string>
+
+    <!-- شاشة المكالمة -->
+    <string name="incoming_call">مكالمة واردة</string>
+    <string name="answer">رد</string>
+    <string name="decline">رفض</string>
+    <string name="btn_mute">كتم</string>
+    <string name="btn_keypad">الأرقام</string>
+    <string name="btn_speaker">مكبّر</string>
+    <string name="btn_add">إضافة</string>
+    <string name="btn_video">فيديو</string>
+    <string name="btn_hold">انتظار</string>
+    <string name="end_call">إنهاء</string>
+
+    <!-- الإشعارات -->
+    <string name="notif_channel_incoming">المكالمات الواردة</string>
+    <string name="notif_channel_missed">المكالمات الفائتة</string>
+    <string name="missed_call">مكالمة فائتة</string>
+
+    <!-- حول التطبيق -->
+    <string name="about_title">حول التطبيق</string>
+    <string name="version_fmt">نسخة التطبيق %1$s</string>
+    <string name="developed_by">تطوير H&amp;H</string>
+    <string name="feedback_button">أرسل ملاحظة أو اقتراحاً حول التطبيق</string>
+    <string name="feedback_title">أرسل ملاحظتك</string>
+    <string name="feedback_hint">اكتب اقتراحك...</string>
+    <string name="feedback_subject">ملاحظة أو اقتراح حول التطبيق</string>
+    <string name="no_email_app">تعذّر فتح تطبيق البريد، يرجى التأكد من وجود تطبيق بريد مثبّت</string>
+    <string name="contact_facebook">للتواصل على فيسبوك:</string>
+    <string name="fb_official">الصفحة الرسمية</string>
+    <string name="fb_hassan">حسن</string>
+    <string name="fb_hazem">حازم</string>
+    <string name="link_error">تعذّر فتح الرابط، يرجى التأكد من وجود تطبيق فيسبوك أو متصفح</string>
+    <string name="privacy_policy">سياسة الخصوصية</string>
+    <string name="privacy_policy_sub">كيف يتعامل التطبيق مع بياناتك</string>
+
+    <!-- سياسة الخصوصية -->
+    <string name="privacy_updated">آخر تحديث: 21 سبتمبر 2026</string>
+
+    <string name="priv_1_title">نظرة عامة</string>
+    <string name="priv_1_body">«مكالمة وهمية» تطبيق ترفيهي يعرض شاشة اتصال وهمية. لا يطلب التطبيق حساباً، ولا يجمع بياناتك الشخصية، ولا يرسل أي بيانات إلى المطوّر أو إلى أي جهة أخرى.</string>
+
+    <string name="priv_2_title">البيانات المخزّنة على جهازك</string>
+    <string name="priv_2_body">يحفظ التطبيق على جهازك فقط ما تضيفه بنفسك: أسماء جهات الاتصال الوهمية، والصور التي تختارها لها، وإعداداتك (مدة التأخير، النغمة، الاهتزاز، اللغة). تبقى هذه البيانات داخل مساحة التطبيق الخاصة ولا تغادر جهازك.</string>
+
+    <string name="priv_3_title">الصور</string>
+    <string name="priv_3_body">عند اختيارك صورة يستخدم التطبيق أداة اختيار الصور في النظام، فلا يحصل على صلاحية الوصول إلى معرض صورك، ولا يصل إلا إلى الصورة التي تختارها بنفسك. تُنسخ الصورة إلى مساحة التطبيق الخاصة وتُحذف عند حذف جهة الاتصال.</string>
+
+    <string name="priv_4_title">الأذونات المستخدمة</string>
+    <string name="priv_4_body">• الإشعارات: لعرض إشعار المكالمة الواردة وإشعار المكالمة الفائتة.\n• الإشعارات بملء الشاشة: لعرض شاشة المكالمة فوق شاشة القفل.\n• الاهتزاز: لاهتزاز الجهاز أثناء الرنين.\n• منع السكون: لإبقاء الجهاز مستيقظاً لبضع ثوانٍ أثناء مؤقّت التأخير.\n\nلا يطلب التطبيق إذن الإنترنت ولا الموقع ولا الكاميرا ولا الميكروفون ولا جهات الاتصال الحقيقية ولا الرسائل.</string>
+
+    <string name="priv_5_title">الأطراف الثالثة</string>
+    <string name="priv_5_body">لا يحتوي التطبيق على إعلانات أو أدوات تحليل أو تتبّع، ولا يشارك أي بيانات مع أطراف ثالثة.</string>
+
+    <string name="priv_6_title">الملاحظات والروابط الخارجية</string>
+    <string name="priv_6_body">عند إرسال ملاحظة يفتح التطبيق برنامج البريد لديك برسالة جاهزة، ولا تُرسل إلا إذا ضغطت أنت على إرسال، وعندها يصلنا عنوان بريدك ومحتوى رسالتك فقط. روابط فيسبوك تُفتح خارج التطبيق وتخضع لسياسات تلك الجهات.</string>
+
+    <string name="priv_7_title">مسؤوليتك عن المحتوى</string>
+    <string name="priv_7_body">التطبيق للترفيه فقط. استخدم أسماءً وصوراً تملك حق استخدامها أو حصلت على موافقة أصحابها، ولا تستخدمه لانتحال شخصية أحد أو لخداع الآخرين بشكل مؤذٍ أو لمحاكاة اتصالات جهات رسمية أو خدمات الطوارئ.</string>
+
+    <string name="priv_8_title">حذف بياناتك</string>
+    <string name="priv_8_body">يمكنك حذف أي جهة اتصال وصورتها من داخل التطبيق، وحذف كل البيانات دفعة واحدة بمسح بيانات التطبيق من إعدادات النظام أو بإلغاء تثبيته.</string>
+
+    <string name="priv_9_title">الأطفال</string>
+    <string name="priv_9_body">لا يجمع التطبيق بيانات من أي مستخدم، بمن فيهم الأطفال.</string>
+
+    <string name="priv_10_title">تغييرات السياسة</string>
+    <string name="priv_10_body">قد نحدّث هذه السياسة عند إضافة ميزات جديدة، وسيظهر تاريخ آخر تحديث أعلى الصفحة.</string>
+
+    <string name="priv_11_title">التواصل</string>
+    <string name="priv_11_body">لأي استفسار عن الخصوصية راسلنا على: hh.programming.services@gmail.com</string>
 </resources>

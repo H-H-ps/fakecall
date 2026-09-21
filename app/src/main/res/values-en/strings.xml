@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Fake Call</string>
+    <string name="tile_label">Call</string>
+    <string name="other_language">العربية</string>
+    <string name="back">Back</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="send">Send</string>
+
+    <!-- Main screen -->
+    <string name="try_now">Try now</string>
+    <string name="delay_toast">The call will ring in %1$d seconds</string>
+    <string name="section_contacts">Contacts</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="add_contact">Add contact</string>
+    <string name="section_delay">Delay before ringing</string>
+    <string name="delay_hint">After tapping the button you can put your phone in your pocket and it will ring after the chosen delay.</string>
+    <string name="delay_now">Immediately</string>
+    <string name="seconds_fmt">%1$d sec</string>
+    <string name="section_sound">Ringtone &amp; vibration</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="change">Change</string>
+    <string name="vibration">Vibration</string>
+    <string name="default_word">Default</string>
+    <string name="section_permissions">Permissions</string>
+    <string name="perm_notifications">Notifications (needed for delayed ringing)</string>
+    <string name="perm_fsi">Full-screen notifications (to show the call on the lock screen)</string>
+    <string name="perm_enabled">✓ Enabled</string>
+    <string name="perm_grant">Grant</string>
+    <string name="section_tile">Quick Settings tile</string>
+    <string name="add_tile">Add the tile to Quick Settings</string>
+    <string name="add_tile_manual">Pull down Quick Settings, tap the edit icon, then add the “Call” tile.</string>
+    <string name="durations_note">Ringing lasts %1$d seconds. After answering, the call lasts %2$d seconds and then ends automatically.</string>
+    <string name="contact_new">New contact</string>
+    <string name="contact_edit">Edit contact</string>
+    <string name="pick_photo">Choose photo</string>
+    <string name="caller_name">Caller name</string>
+    <string name="unknown_name">Unknown</string>
+
+    <!-- Call screen -->
+    <string name="incoming_call">Incoming call</string>
+    <string name="answer">Answer</string>
+    <string name="decline">Decline</string>
+    <string name="btn_mute">Mute</string>
+    <string name="btn_keypad">Keypad</string>
+    <string name="btn_speaker">Speaker</string>
+    <string name="btn_add">Add call</string>
+    <string name="btn_video">Video</string>
+    <string name="btn_hold">Hold</string>
+    <string name="end_call">End call</string>
+
+    <!-- Notifications -->
+    <string name="notif_channel_incoming">Incoming calls</string>
+    <string name="notif_channel_missed">Missed calls</string>
+    <string name="missed_call">Missed call</string>
+
+    <!-- About -->
+    <string name="about_title">About</string>
+    <string name="version_fmt">Version %1$s</string>
+    <string name="developed_by">Developed by H&amp;H</string>
+    <string name="feedback_button">Send feedback or a suggestion</string>
+    <string name="feedback_title">Send your feedback</string>
+    <string name="feedback_hint">Write your suggestion...</string>
+    <string name="feedback_subject">Feedback or suggestion about the app</string>
+    <string name="no_email_app">Couldn’t open an email app. Please make sure one is installed.</string>
+    <string name="contact_facebook">Contact us on Facebook:</string>
+    <string name="fb_official">Official page</string>
+    <string name="fb_hassan">Hassan</string>
+    <string name="fb_hazem">Hazem</string>
+    <string name="link_error">Couldn’t open the link. Please make sure Facebook or a browser is installed.</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="privacy_policy_sub">How the app handles your data</string>
+
+    <!-- Privacy policy -->
+    <string name="privacy_updated">Last updated: September 21, 2026</string>
+
+    <string name="priv_1_title">Overview</string>
+    <string name="priv_1_body">“Fake Call” is an entertainment app that shows a simulated incoming call screen. It doesn’t require an account, doesn’t collect your personal data, and doesn’t send any data to the developer or to anyone else.</string>
+
+    <string name="priv_2_title">Data stored on your device</string>
+    <string name="priv_2_body">The app stores only what you add, on your own device: the fake contact names, the photos you choose for them, and your settings (delay, ringtone, vibration, language). This data stays in the app’s private storage and never leaves your device.</string>
+
+    <string name="priv_3_title">Photos</string>
+    <string name="priv_3_body">When you choose a photo, the app uses the system photo picker. It does not get access to your photo library — only to the single image you pick. The image is copied to the app’s private storage and is deleted when you delete that contact.</string>
+
+    <string name="priv_4_title">Permissions used</string>
+    <string name="priv_4_body">• Notifications: to show the incoming call and missed call notifications.\n• Full-screen notifications: to show the call screen over the lock screen.\n• Vibration: to vibrate the device while ringing.\n• Wake lock: to keep the device awake for a few seconds during the delay timer.\n\nThe app does not request internet, location, camera, microphone, real contacts or messages permissions.</string>
+
+    <string name="priv_5_title">Third parties</string>
+    <string name="priv_5_body">The app contains no ads, analytics or trackers, and shares no data with third parties.</string>
+
+    <string name="priv_6_title">Feedback and external links</string>
+    <string name="priv_6_body">When you send feedback, the app opens your email app with a ready message. It is sent only if you press send yourself, and then we receive only your email address and the content of your message. Facebook links open outside the app and are subject to those services’ own policies.</string>
+
+    <string name="priv_7_title">Your responsibility for content</string>
+    <string name="priv_7_body">The app is for entertainment only. Use names and photos you have the right to use or have permission from the people shown, and don’t use it to impersonate anyone, to deceive others in a harmful way, or to imitate official bodies or emergency services.</string>
+
+    <string name="priv_8_title">Deleting your data</string>
+    <string name="priv_8_body">You can delete any contact and its photo from within the app, and remove all data at once by clearing the app’s data in system settings or by uninstalling it.</string>
+
+    <string name="priv_9_title">Children</string>
+    <string name="priv_9_body">The app doesn’t collect data from anyone, including children.</string>
+
+    <string name="priv_10_title">Changes to this policy</string>
+    <string name="priv_10_body">We may update this policy when new features are added. The last-updated date is shown at the top of this page.</string>
+
+    <string name="priv_11_title">Contact</string>
+    <string name="priv_11_body">For any privacy question, email us at: hh.programming.services@gmail.com</string>
+</resources>

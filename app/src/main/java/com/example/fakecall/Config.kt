@@ -34,7 +34,7 @@ object Prefs {
     const val DEFAULT_NAME = "العفوية"
 
     private fun sp(ctx: Context) =
-        ctx.applicationContext.getSharedPreferences("fakecall", Context.MODE_PRIVATE)
+        (ctx.applicationContext ?: ctx).getSharedPreferences("fakecall", Context.MODE_PRIVATE)
 
     fun newId(): String = UUID.randomUUID().toString()
 
@@ -82,6 +82,10 @@ object Prefs {
     // ---------- التأخير قبل الرنين ----------
     fun delaySec(ctx: Context): Int = sp(ctx).getInt("delay_sec", 0)
     fun setDelaySec(ctx: Context, v: Int) = sp(ctx).edit().putInt("delay_sec", v).apply()
+
+    // ---------- اللغة (ar / en) ----------
+    fun lang(ctx: Context): String = sp(ctx).getString("lang", "ar") ?: "ar"
+    fun setLang(ctx: Context, v: String) = sp(ctx).edit().putString("lang", v).apply()
 
     // ---------- النغمة والاهتزاز ----------
     fun ringtoneUri(ctx: Context): String? = sp(ctx).getString("ringtone", null)
